@@ -1,0 +1,83 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  password  String
+  name      String
+  role      String   @default("manager")
+  createdAt DateTime @default(now())
+}
+
+model Product {
+  id          String           @id @default(cuid())
+  name        String
+  description String
+  imageUrl    String
+  category    String
+  available   Boolean          @default(true)
+  minPriceGhs Float
+  maxPriceGhs Float
+  createdAt   DateTime         @default(now())
+  variants    ProductVariant[]
+  orderItems  OrderItem[]
+
+  @@index([category])
+}
+
+model ProductVariant {
+  id        String  @id @default(cuid())
+  productId String
+  label     String
+  priceGhs  Float
+  position  Int     @default(0)
+  product   Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  @@index([productId])
+}
+
+model Order {
+  id               String      @id @default(cuid())
+  trackingCode     String      @unique
+  customerName     String
+  customerPhone    String
+  customerEmail    String?
+  deliveryAddress  String
+  paymentMethod    String
+  paymentReference String?     @unique
+  paymentProvider  String      @default("PAYSTACK")
+  paidAt           DateTime?
+  notes            String?
+  subtotalGhs      Float
+  deliveryFeeGhs   Float       @default(15)
+  totalGhs         Float
+  status           String      @default("PENDING_PAYMENT")
+  createdAt        DateTime    @default(now())
+  updatedAt        DateTime    @updatedAt
+  items            OrderItem[]
+
+  @@index([status])
+  @@index([createdAt])
+}
+
+model OrderItem {
+  id           String  @id @default(cuid())
+  orderId      String
+  productId    String
+  variantId    String?
+  name         String
+  variantLabel String
+  priceGhs     Float
+  quantity     Int
+  order        Order   @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  product      Product @relation(fields: [productId], references: [id])
+
+  @@index([orderId])
+}
