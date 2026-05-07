@@ -5,6 +5,9 @@ import { verifySession, SESSION_COOKIE } from "@/lib/auth";
 import { cookies } from "next/headers";
 import { initializeTransaction, isPaystackEnabled } from "@/lib/paystack";
 
+export const dynamic = "force-dynamic";
+export const runtime = "nodejs";
+
 // Delivery fee currently disabled — set to a number > 0 to re-enable.
 const DELIVERY_FEE = 0;
 

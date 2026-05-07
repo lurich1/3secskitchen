@@ -4,6 +4,9 @@ import { verifySession, SESSION_COOKIE } from "@/lib/auth";
 import { cookies } from "next/headers";
 import { KITCHEN_STATUSES } from "@/lib/utils";
 
+export const dynamic = "force-dynamic";
+export const runtime = "nodejs";
+
 export async function PATCH(
   req: Request,
   { params }: { params: { id: string } }

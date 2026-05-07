@@ -3,6 +3,10 @@ import { prisma } from "@/lib/prisma";
 import bcrypt from "bcryptjs";
 import { signSession, SESSION_COOKIE } from "@/lib/auth";
 
+/** Avoid Next/Vercel trying to statically analyze this route during build. */
+export const dynamic = "force-dynamic";
+export const runtime = "nodejs";
+
 export async function POST(req: Request) {
   let body: any;
   try {
